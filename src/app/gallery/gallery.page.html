@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Gallery</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <h2>Reddit Search</h2>
+  <ion-searchbar
+    [(ngModel)]="redditSearchText"
+    (ionChange)="onSearchChange()"
+    placeholder="Type Topic..."
+    debounce="500"
+    mode="md"
+  ></ion-searchbar>
+  <div *ngIf="redditResults$ | async as redditResults">
+    <ion-card tappable *ngFor="let redditResult of redditResults" (click)="openReddit(redditResult.imgUrl)">
+      <ion-card-header>
+        <img src="{{ redditResult.imgUrl }}">
+      </ion-card-header>
+      <ion-card-content>
+        {{ redditResult.title }}
+      </ion-card-content>
+    </ion-card>
+    <div class="no-results" *ngIf="redditSearchText && redditResults.length === 0">Nothing is found.</div>
+  </div>
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
