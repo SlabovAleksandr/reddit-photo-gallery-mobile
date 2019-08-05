@@ -14,6 +14,7 @@ export class GalleryPage implements OnInit {
 
   public redditSearchText: string;
   public redditResults$: BehaviorSubject<RedditResult[]> = new BehaviorSubject(Object([]));
+  public noResults = false;
 
   constructor(
     private redditService: RedditService,
@@ -25,10 +26,12 @@ export class GalleryPage implements OnInit {
   ngOnInit() {
   }
 
-  public async onSearchChange() {
+  public async onSearch() {
     if (!this.redditSearchText.length) {
       return;
     }
+
+    this.noResults = false;
 
     const loading = await this.loadingCtrl.create({
       spinner: 'crescent'
@@ -40,7 +43,13 @@ export class GalleryPage implements OnInit {
       .pipe(
         tap(() => loading.dismiss())
       )
-      .subscribe(res => this.redditResults$.next(res));
+      .subscribe(res => {
+        if (!res.length) {
+          this.noResults = true;
+        }
+
+        this.redditResults$.next(res);
+      });
   }
 
   public async loadMore(event) {

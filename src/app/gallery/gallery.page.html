@@ -8,9 +8,8 @@
   <h2>Reddit Search</h2>
   <ion-searchbar
     [(ngModel)]="redditSearchText"
-    (ionChange)="onSearchChange()"
+    (search)="onSearch()"
     placeholder="Type Topic..."
-    debounce="500"
     mode="md"
   ></ion-searchbar>
   <div *ngIf="redditResults$ | async as redditResults">
@@ -22,7 +21,7 @@
         {{ redditResult.title }}
       </ion-card-content>
     </ion-card>
-    <div class="no-results" *ngIf="redditSearchText && redditResults.length === 0">Nothing is found.</div>
+    <div class="no-results" *ngIf="noResults">Nothing is found.</div>
   </div>
   <ion-infinite-scroll (ionInfinite)="loadMore($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles">
